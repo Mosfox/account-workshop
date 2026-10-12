@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการสมาชิก</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 40px 20px;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            background: #f3f6fb;
+            color: #243047;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px;
+            font-size: 30px;
+            color: #172b4d;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #718096;
+            font-size: 15px;
+        }
+
+        .card {
+            background: #fff;
+            border: 1px solid #e5eaf2;
+            border-radius: 14px;
+            padding: 26px;
+            margin-bottom: 24px;
+            box-shadow: 0 5px 18px rgba(31, 51, 82, 0.04);
+        }
+
+        .card h2 {
+            margin: 0 0 22px;
+            font-size: 20px;
+            color: #243b63;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #455570;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #d8e0ec;
+            border-radius: 8px;
+            background: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .field input:focus {
+            border-color: #3478f6;
+            box-shadow: 0 0 0 3px rgba(52, 120, 246, 0.12);
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* ช่องรหัสผ่านพร้อมปุ่มแสดง/ซ่อน */
+        .password-wrapper {
+            display: flex;
+            align-items: center;
+            border: 1px solid #d8e0ec;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .password-wrapper:focus-within {
+            border-color: #3478f6;
+            box-shadow: 0 0 0 3px rgba(52, 120, 246, 0.12);
+        }
+
+        .password-wrapper input {
+            flex: 1;
+            min-width: 0;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .password-wrapper input:focus {
+            border: none;
+            box-shadow: none;
+        }
+
+        .toggle-password {
+            flex-shrink: 0;
+            padding: 10px 14px;
+            color: #2868e8;
+            background: #fff;
+            border-radius: 0;
+            white-space: nowrap;
+        }
+
+        .toggle-password:hover {
+            background: #f0f5ff;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            color: #fff;
+            background: #2868e8;
+        }
+
+        .btn-primary:hover {
+            background: #1e54c5;
+        }
+
+        .form-button {
+            margin-top: 20px;
+        }
+
+        .login-card {
+            max-width: 620px;
+        }
+
+        #message {
+            display: none;
+            padding: 13px 16px;
+            border-radius: 8px;
+            margin: 0 0 22px;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        #message.success {
+            display: block;
+            color: #167447;
+            background: #eaf8f0;
+            border: 1px solid #c8eed8;
+        }
+
+        #message.error {
+            display: block;
+            color: #b42318;
+            background: #fff0ef;
+            border: 1px solid #ffd3cf;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+
+        thead {
+            background: #f5f8fc;
+        }
+
+        th, td {
+            padding: 15px 16px;
+            border-bottom: 1px solid #e9eef5;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            color: #50617c;
+            font-weight: 600;
+        }
+
+        td {
+            color: #34445d;
+        }
+
+        tbody tr:hover {
+            background: #f9fbfe;
+        }
+
+        .footer {
+            padding: 10px 0;
+            text-align: center;
+            color: #8a96a8;
+            font-size: 13px;
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 22px 12px;
+            }
+
+            .page-header h1 {
+                font-size: 25px;
+            }
+
+            .card {
+                padding: 20px 16px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            th, td {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+
+        <header class="page-header">
+            <h1>ระบบจัดการสมาชิก</h1>
+            <p>จัดการบัญชีผู้ใช้ สมัครสมาชิก และตรวจสอบข้อมูลสมาชิก</p>
+        </header>
+
+        <p id="message" role="status" aria-live="polite"></p>
+
+        <!-- สมัครสมาชิก -->
+        <section class="card">
+            <h2>สมัครสมาชิก</h2>
+
+            <form id="register-form">
+                <div class="form-grid">
+
+                    <div class="field">
+                        <label for="reg-username">ชื่อผู้ใช้ (Username)</label>
+                        <input
+                            id="reg-username"
+                            name="username"
+                            placeholder="เช่น somchai_01"
+                            pattern="[a-z0-9_]+"
+                            title="ใช้ตัวอักษรภาษาอังกฤษพิมพ์เล็ก ตัวเลข และ _ เท่านั้น"
+                            autocomplete="username"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label for="reg-name">ชื่อ-นามสกุล</label>
+                        <input
+                            id="reg-name"
+                            name="name"
+                            placeholder="กรอกชื่อและนามสกุล"
+                            autocomplete="name"
+                            required
+                        >
+                    </div>
+
+                    <div class="field full-width">
+                        <label for="reg-email">อีเมล</label>
+                        <input
+                            id="reg-email"
+                            name="email"
+                            type="email"
+                            placeholder="name@example.com"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
+
+                    <div class="field full-width">
+                        <label for="reg-password">รหัสผ่าน</label>
+
+                        <div class="password-wrapper">
+                            <input
+                                id="reg-password"
+                                name="password"
+                                type="password"
+                                placeholder="รหัสผ่านอย่างน้อย 8 ตัวอักษร"
+                                minlength="8"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="toggle-password"
+                                aria-controls="reg-password"
+                                aria-pressed="false"
+                                onclick="togglePassword('reg-password', this)"
+                            >แสดง</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn-primary form-button">
+                    สมัครสมาชิก
+                </button>
+            </form>
+        </section>
+
+        <!-- เข้าสู่ระบบ -->
+        <section class="card login-card">
+            <h2>เข้าสู่ระบบ</h2>
+
+            <form id="login-form">
+                <div class="form-grid">
+
+                    <div class="field full-width">
+                        <label for="login-username">ชื่อผู้ใช้</label>
+                        <input
+                            id="login-username"
+                            name="username"
+                            placeholder="กรอกชื่อผู้ใช้"
+                            autocomplete="username"
+                            required
+                        >
+                    </div>
+
+                    <div class="field full-width">
+                        <label for="login-password">รหัสผ่าน</label>
+
+                        <div class="password-wrapper">
+                            <input
+                                id="login-password"
+                                name="password"
+                                type="password"
+                                placeholder="กรอกรหัสผ่าน"
+                                autocomplete="current-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="toggle-password"
+                                aria-controls="login-password"
+                                aria-pressed="false"
+                                onclick="togglePassword('login-password', this)"
+                            >แสดง</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn-primary form-button">
+                    เข้าสู่ระบบ
+                </button>
+            </form>
+        </section>
+
+        <!-- ตารางสมาชิก -->
+        <section class="card">
+            <h2>สมาชิกทั้งหมด</h2>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่อผู้ใช้</th>
+                            <th>ชื่อ-นามสกุล</th>
+                            <th>อีเมล</th>
+                            <th>สิทธิ์ผู้ใช้</th>
+                            <th>จัดการ</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="user-table"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer class="footer">
+            ระบบจัดการสมาชิกด้วย Node.js และ MongoDB
+        </footer>
+
+    </main>
+
+    <script>
+        // แสดงหรือซ่อนรหัสผ่าน
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            const isHidden = input.type === 'password';
+
+            input.type = isHidden ? 'text' : 'password';
+            button.textContent = isHidden ? 'ซ่อน' : 'แสดง';
+            button.setAttribute('aria-pressed', String(isHidden));
+        }
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>
