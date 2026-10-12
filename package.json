@@ -1,0 +1,28 @@
+{
+  "name": "account-workshop",
+  "version": "1.0.0",
+  "description": "MongoDB and Node.js membership workshop",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test:db": "node db-test.js",
+    "test:user": "node user-test.js"
+  },
+  "keywords": [
+    "mongodb",
+    "express",
+    "workshop"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.22.3",
+    "mongodb": "^6.21.0"
+  },
+  "type": "commonjs",
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
